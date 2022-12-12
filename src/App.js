@@ -11,10 +11,6 @@ function App() {
   const [campus, setCampus] = useState('');
 
 
-  const handleSearch = e => {
-    setSearch(e.target.value);
-  };
-
   const filteredUsers = userList.slice().filter(user => {
     if(user.firstName.toLocaleLowerCase().includes(search.toLocaleLowerCase()) || user.lastName.toLocaleLowerCase().includes(search.toLocaleLowerCase())) return true;
   });
@@ -31,28 +27,32 @@ function App() {
     setUserList(checkIfStudent);
   };
 
-  const handleCampusChange = e => {
-    setCampus(e.target.value);
-  }
+  const options = () => { 
+    const newCampusesArray = [...new Set(users.map(user => user.campus))]
+    const campuses = newCampusesArray.map(campus => <option value={campus} key={campus}>{campus}</option>)
+    return campuses;
+    };
 
   return (
-    <div className="App">
+    <div className="container">
+    <div>
     <h1>Campus Directory</h1>
 
-    <input type='text' value={search} onChange={handleSearch} />
-
-    <label>Teacher</label>
-    <input type='checkbox' checked={isTeacher} onChange={handleIsTeacher} />
-
-    <label>Student</label>
-    <input type='checkbox' checked={isStudent} onChange={handleIsStudent} />
-
-    <label>Campus:</label>
-    <select>
-      {userList.slice().map(user => (
-        <option value={campus} onChange={handleCampusChange} > {user.campus}</option>
-      ))}
-    </select>
+    <div className='filters'>
+      <input type='text' value={search} onChange={e => setSearch(e.target.value)} />
+  
+      <label>Teacher</label>
+      <input type='checkbox' checked={isTeacher} onChange={handleIsTeacher} />
+  
+      <label>Student</label>
+      <input type='checkbox' checked={isStudent} onChange={handleIsStudent} />
+  
+      <label>Campus:</label>
+      <select name="campus" value={campus} onChange={e => setCampus(e.target.value)}>
+      <option value="">All</option>
+      {options()}
+      </select>
+    </div>
 
     <table>
       <thead>
@@ -77,6 +77,7 @@ function App() {
       ))}
       </tbody>
     </table>
+    </div>
     </div>
   );
 }
